@@ -1,0 +1,116 @@
+<svg width="680" height="460" viewBox="0 0 680 460" xmlns="http://www.w3.org/2000/svg">
+<style>
+  /* One 6s cycle:
+     0–45%    handset swings eight times, sound lines pulse
+     50–76%   cord retracts and redraws
+     78–96%   dial turns and returns
+     96–100%  rest, then repeat                       */
+
+  #handset {
+    transform-box: view-box;
+    transform-origin: 340px 252px;
+    animation: ring 6s ease-in-out infinite;
+  }
+  @keyframes ring {
+    0%, 1%    { transform: rotate(0deg); }
+    5%        { transform: rotate(-14deg); }
+    10%       { transform: rotate(14deg); }
+    15%       { transform: rotate(-13deg); }
+    20%       { transform: rotate(13deg); }
+    25%       { transform: rotate(-11deg); }
+    30%       { transform: rotate(11deg); }
+    35%       { transform: rotate(-8deg); }
+    40%       { transform: rotate(8deg); }
+    45%, 100% { transform: rotate(0deg); }
+  }
+
+  #sound {
+    animation: sound 6s ease-in-out infinite;
+  }
+  @keyframes sound {
+    0%, 2%    { opacity: 0; }
+    6%        { opacity: 1; }
+    12%       { opacity: 0.15; }
+    18%       { opacity: 1; }
+    24%       { opacity: 0.15; }
+    30%       { opacity: 1; }
+    36%       { opacity: 0.15; }
+    41%       { opacity: 0.7; }
+    46%, 100% { opacity: 0; }
+  }
+
+  #cord-line {
+    stroke-dasharray: 1;
+    animation: cord 6s ease-in-out infinite;
+  }
+  @keyframes cord {
+    0%, 50%   { stroke-dashoffset: 0; }
+    62%       { stroke-dashoffset: 1; }
+    76%, 100% { stroke-dashoffset: 0; }
+  }
+
+  #dial {
+    transform-box: view-box;
+    transform-origin: 340px 322px;
+    animation: dial 6s ease-in-out infinite;
+  }
+  @keyframes dial {
+    0%, 78%   { transform: rotate(0deg); }
+    88%       { transform: rotate(34deg); }
+    96%, 100% { transform: rotate(0deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #handset, #cord-line, #dial, #sound { animation: none; }
+    #cord-line { stroke-dashoffset: 0; }
+    #sound { opacity: 0; }
+  }
+</style>
+
+<g id="cord" fill="none" stroke="#2A2440" stroke-width="6" stroke-linecap="round">
+  <path id="cord-line" pathLength="1" d="M232 250 C 150 230, 130 150, 200 120 C 270 92, 330 150, 300 175 C 275 196, 240 170, 262 140 C 285 110, 350 108, 368 130"/>
+</g>
+
+<g id="sound" fill="none" stroke="#E4574C" stroke-width="7" stroke-linecap="round" opacity="0">
+  <path id="sound-left-1"  d="M178 232 Q 160 249 178 266"/>
+  <path id="sound-left-2"  d="M158 222 Q 132 249 158 276"/>
+  <path id="sound-left-3"  d="M138 212 Q 104 249 138 286"/>
+  <path id="sound-right-1" d="M502 232 Q 520 249 502 266"/>
+  <path id="sound-right-2" d="M522 222 Q 548 249 522 276"/>
+  <path id="sound-right-3" d="M542 212 Q 576 249 542 286"/>
+</g>
+
+<g id="handset">
+  <path id="handset-body" d="M232 248 C 218 160, 462 160, 448 248 L 410 236 C 418 196, 262 196, 270 236 Z" fill="#FBF3E7" stroke="#2A2440" stroke-width="6" stroke-linejoin="round"/>
+  <rect id="handset-earpiece-left" x="196" y="216" width="84" height="66" rx="24" fill="#FBF3E7" stroke="#2A2440" stroke-width="6"/>
+  <rect id="handset-earpiece-right" x="400" y="216" width="84" height="66" rx="24" fill="#FBF3E7" stroke="#2A2440" stroke-width="6"/>
+</g>
+
+<g id="base">
+  <path id="base-body" d="M250 396 C 250 310, 288 292, 300 258 L 380 258 C 392 292, 430 310, 430 396 Z" fill="#A9D4E4" stroke="#2A2440" stroke-width="6" stroke-linejoin="round"/>
+  <rect id="base-plinth" x="222" y="352" width="236" height="64" rx="18" fill="#A9D4E4" stroke="#2A2440" stroke-width="6"/>
+  <rect id="cradle-left" x="292" y="240" width="20" height="34" fill="#A9D4E4" stroke="#2A2440" stroke-width="6"/>
+  <rect id="cradle-right" x="368" y="240" width="20" height="34" fill="#A9D4E4" stroke="#2A2440" stroke-width="6"/>
+</g>
+
+<g id="dial">
+  <circle id="dial-face" cx="340" cy="322" r="62" fill="#F6B0DF" stroke="#2A2440" stroke-width="6"/>
+  <circle id="dial-hub" cx="340" cy="322" r="22" fill="#F2A661" stroke="#2A2440" stroke-width="5"/>
+  <g id="dial-holes" fill="#2A2440">
+    <circle cx="340" cy="278" r="9"/>
+    <circle cx="371" cy="291" r="9"/>
+    <circle cx="384" cy="322" r="9"/>
+    <circle cx="371" cy="353" r="9"/>
+    <circle cx="340" cy="366" r="9"/>
+    <circle cx="309" cy="353" r="9"/>
+    <circle cx="296" cy="322" r="9"/>
+    <circle cx="309" cy="291" r="9"/>
+  </g>
+</g>
+
+<g id="feet">
+  <rect id="foot-left" x="252" y="410" width="56" height="18" rx="6" fill="#F2A661" stroke="#2A2440" stroke-width="6"/>
+  <rect id="foot-right" x="372" y="410" width="56" height="18" rx="6" fill="#F2A661" stroke="#2A2440" stroke-width="6"/>
+</g>
+
+</svg>

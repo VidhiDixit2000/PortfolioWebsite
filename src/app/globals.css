@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #fbf3e7;
+  --color-coral: #e4574c;
+  --color-outline: #2a2440;
+  --color-card-blue: #a9d4e4;
+  --color-card-pink: #f6b0df;
+  --color-card-orange: #f2a661;
+  --color-hero-maroon: #7a1e1e;
+  --color-card-olive: #e3e48a;
+  /* Darkened, warmed-down version of card-olive — used as the fill for
+     heading "boxes" so they read as a warm ink-stamped label instead of
+     a plain white tag. */
+  --color-olive-deep: #6e6a3a;
+  /* Light, warm parchment tone — a shade deeper/yellower than the page's
+     own cream, used as the fill for detail-page content blocks so they
+     read as a distinct panel on the page rather than blending flat into
+     the background. Uniform across every section, not per-card. */
+  --color-paper: #f6ecc9;
+
+  --font-sans: var(--font-inter), ui-sans-serif, sans-serif;
+  --font-display: var(--font-aclonica), var(--font-inter), ui-sans-serif, sans-serif;
+
+  --text-14: 0.875rem;
+  --text-16: 1rem;
+  --text-20: 1.25rem;
+  --text-32: 2rem;
+  --text-56: 3.5rem;
+
+  /* Card heading size: bigger than --text-20 and fluid — sized off each
+     card's own box (cqw = container query width, see [container-type]
+     on the card in BentoCard.tsx) rather than the viewport. Cards vary a
+     lot in width (Education ~280px vs Projects ~660px on desktop), so
+     viewport-relative sizing let a narrow card's heading run past its
+     edges while a wide card's looked small; container-relative sizing
+     keeps every heading proportional to the box it actually sits in,
+     so it can't overflow as the page is resized or zoomed. */
+  --text-card: clamp(1.15rem, 0.85rem + 5.5cqw, 2.25rem);
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-outline);
+  font-family: var(--font-sans);
+}
+
+/* Bento grid matching the Figma reference. Single column on mobile
+   (no tablet breakpoint for v1). */
+.bento-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "experience"
+    "education"
+    "blogs"
+    "hero"
+    "contacts"
+    "resume"
+    "projects"
+    "agent";
+}
+
+@media (min-width: 768px) {
+  /* Pin to the exact viewport height so the grid's 1fr rows actually
+     divide up real screen space instead of shrinking to content size.
+     Keeps the whole composition filling the screen at any zoom level
+     (zooming changes the effective viewport width/height in CSS px,
+     which this recomputes against) while only the type scale — via the
+     fluid --text-card clamp() above — grows or shrinks. */
+  .bento-grid {
+    gap: 1.5rem;
+    height: 100%;
+    grid-template-columns: 1fr 1fr 1.3fr 1.3fr;
+    grid-template-rows: repeat(4, minmax(150px, 1fr));
+    grid-template-areas:
+      "experience experience education   blogs"
+      "experience experience hero        contacts"
+      "resume     projects   projects    contacts"
+      "resume     projects   projects    agent";
+  }
+}
+
+.card-experience {
+  grid-area: experience;
+}
+.card-education {
+  grid-area: education;
+}
+.card-blogs {
+  grid-area: blogs;
+}
+.card-hero {
+  grid-area: hero;
+}
+.card-contacts {
+  grid-area: contacts;
+}
+.card-resume {
+  grid-area: resume;
+}
+.card-projects {
+  grid-area: projects;
+}
+.card-agent {
+  grid-area: agent;
+}
