@@ -1,5 +1,7 @@
 # Vidhi Dixit — Portfolio
 
+**Live:** [vdportfolio-delta.vercel.app](https://vdportfolio-delta.vercel.app)
+
 Personal portfolio built as a bento-grid landing page: eight cards, each a
 doorway into a detail page (Experience, Education, Projects, Blogs,
 Contacts/Socials, Resume). Click a card and it collapses into a full
@@ -61,13 +63,16 @@ Still open:
 - **AI agent card** — placeholder tile only, no matching logic/UI yet
 - **Blogs** — manually seeded from dev.to; the live API pull described in
   `CLAUDE.md` isn't wired up
-- **Not deployed** — no commits yet, nothing pushed
+- **CD isn't wired up** — deployed manually via the Vercel CLI; pushing to
+  a GitHub repo and importing it on Vercel would make deploys automatic
+  on every push instead
 
 ## Deploying
 
-No git remote is configured yet. Once one exists, this deploys cleanly
-to [Vercel](https://vercel.com) as a standard Next.js app — no special
-build config needed.
+Deployed on [Vercel](https://vercel.com) — currently a manual deploy via
+the Vercel CLI (`vercel --prod`), not connected to a git remote yet. For
+auto-deploy-on-push, push this repo to GitHub and import it on Vercel;
+no extra build config is needed either way.
 
 ---
 
