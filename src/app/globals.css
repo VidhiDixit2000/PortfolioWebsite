@@ -18,7 +18,9 @@
      read as a distinct panel on the page rather than blending flat into
      the background. Uniform across every section, not per-card. */
   --color-paper: #f6ecc9;
+  --color-purple: #9d00ff;
 
+  --font-cursive: var(--font-pacifico), cursive;
   --font-sans: var(--font-inter), ui-sans-serif, sans-serif;
   --font-display: var(--font-aclonica), var(--font-inter), ui-sans-serif, sans-serif;
 
@@ -73,7 +75,14 @@ body {
     gap: 1.5rem;
     height: 100%;
     grid-template-columns: 1fr 1fr 1.3fr 1.3fr;
-    grid-template-rows: repeat(4, minmax(150px, 1fr));
+    /* No px floor on rows — with a fixed-height grid (height: 100% off
+       the dvh-locked main), a hard minmax(150px, …) floor can add up to
+       more than the viewport actually has, pushing the bottom row off
+       screen with no scrollbar to reveal it (overflow-hidden on main).
+       minmax(0, 1fr) guarantees the four rows always sum to exactly the
+       available height, so every card stays on screen at any window
+       size. */
+    grid-template-rows: repeat(4, minmax(0, 1fr));
     grid-template-areas:
       "experience experience education   blogs"
       "experience experience hero        contacts"

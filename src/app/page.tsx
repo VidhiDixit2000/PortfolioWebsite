@@ -3,20 +3,20 @@
 import { useState, type ComponentType } from "react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { BentoCard } from "@/components/BentoCard";
-import { DetailView } from "@/components/DetailView";
+import { DetailView, DetailNavigationProvider } from "@/components/DetailView";
 import { ExperienceContent } from "@/components/detail/ExperienceContent";
 import { EducationContent } from "@/components/detail/EducationContent";
 import { ProjectsContent } from "@/components/detail/ProjectsContent";
 import { BlogsContent } from "@/components/detail/BlogsContent";
 import { ContactsContent } from "@/components/detail/ContactsContent";
-import { ResumeContent } from "@/components/detail/ResumeContent";
+import { WhoAmIContent } from "@/components/detail/WhoAmIContent";
 
 const DETAIL_CONTENT: Record<string, ComponentType> = {
   "card-experience": ExperienceContent,
   "card-education": EducationContent,
   "card-blogs": BlogsContent,
   "card-contacts": ContactsContent,
-  "card-resume": ResumeContent,
+  "card-resume": WhoAmIContent,
   "card-projects": ProjectsContent,
 };
 
@@ -26,6 +26,7 @@ const cards = [
     title: "Experience",
     fill: "bg-card-blue",
     titlePosition: "top-left",
+    titleSize: "text-[clamp(1.05rem,0.8rem+4.5cqw,1.9rem)]",
     illustration: "/illustrations/experience.svg",
     // Nudged further down from the default centered fit.
     illustrationClassName:
@@ -42,8 +43,10 @@ const cards = [
     // the card so the cap's tassel doesn't sit under the heading box.
     titleSize: "text-[clamp(1.05rem,0.8rem+4.5cqw,1.9rem)]",
     illustration: "/illustrations/education.svg",
+    // Less padding than before so object-contain has more room to scale
+    // the cap up.
     illustrationClassName:
-      "inset-0 h-full w-full object-contain object-right p-6",
+      "inset-0 h-full w-full object-contain object-right p-2",
     bleed: false,
     illustrationZIndex: 10,
   },
@@ -52,34 +55,54 @@ const cards = [
     title: "Blogs",
     fill: "bg-card-pink",
     titlePosition: "top-left",
+    titleSize: "text-[clamp(1.05rem,0.8rem+4.5cqw,1.9rem)]",
     illustration: "/illustrations/blog.svg",
-    illustrationClassName: "inset-0 h-full w-full object-contain p-6",
+    // Nudged right (asymmetric padding) so the pen's travel path clears
+    // the title in the top-left corner instead of passing under it.
+    illustrationClassName: "inset-0 h-full w-full object-contain object-right pt-2 pr-1 pb-2 pl-16",
     bleed: false,
     illustrationZIndex: 10,
   },
   {
     area: "card-contacts",
-    title: "Contacts/Socials",
+    title: "Contacts / Socials",
     fill: "bg-card-olive",
     vertical: true,
     titlePosition: "top-right",
+    // Smaller than the other cards' shared size, and small enough that
+    // the whole unbroken label (whitespace-nowrap in BentoCard) fits
+    // within the card's own height instead of overflowing past it.
+    titleSize: "text-[clamp(1.2rem,1rem+2cqw,1.5rem)]",
+    // A little clearance from the top edge, on top of the card's own p-6.
+    titleClassName: "mt-2",
     illustration: "/illustrations/telephone.svg",
+    // Biased right, nudged up from dead-center (18% instead of 50%) —
+    // top eased in from the full bleed (-top-4 instead of -top-10) so
+    // the phone isn't flush against the card's top edge.
     illustrationClassName:
-      "-inset-10 h-[calc(100%+5rem)] w-[calc(100%+5rem)] object-contain",
+      "-top-4 -right-10 -bottom-10 -left-10 h-[calc(100%+3.5rem)] w-[calc(100%+5rem)] object-contain object-[100%_18%]",
     bleed: true,
-    illustrationZIndex: 10,
+    // Above the title (z-20) instead of below it — the ringing sound-wave
+    // lines reach toward the title's corner and were getting hidden
+    // behind it.
+    illustrationZIndex: 25,
   },
   {
     area: "card-resume",
-    title: "Resume",
+    title: "Who am I?",
     fill: "bg-card-pink",
-    // Heading moved to the bottom, out of the way of the sheet, which
-    // now lives up top, tilted and bleeding past the corner like a
-    // sticker on a diary.
-    titlePosition: "bottom-left",
+    // Anchored to the bottom, clear of the envelope which owns the top
+    // of the card, nudged up off the card's bottom edge a bit.
+    titlePosition: "bottom-center",
+    // Matches the envelope's rotate-[-8deg] tilt above.
+    titleClassName: "mb-4 rotate-[-8deg]",
     illustration: "/illustrations/Resume.svg",
+    // Eased down from the very top edge, tilted slightly — bleeding past
+    // the card's top edge is fine, and it's fine for it to overlap the
+    // Experience card above too, matching the sticker treatment used
+    // elsewhere.
     illustrationClassName:
-      "-top-4 -right-3 h-[92%] w-auto max-w-none object-contain rotate-6",
+      "-top-20 -right-4 h-[92%] w-auto max-w-none object-contain rotate-[-8deg]",
     bleed: true,
     illustrationZIndex: 10,
   },
@@ -93,6 +116,7 @@ const cards = [
     // right-side bleed to eat into the empty space to its left.
     titlePosition: "center-left",
     titleClassName: "ml-24",
+    titleSize: "text-[clamp(1.05rem,0.8rem+4.5cqw,1.9rem)]",
     illustration: "/illustrations/robot_project.svg",
     illustrationClassName:
       "-bottom-6 right-6 h-[105%] w-auto max-w-none object-contain",
@@ -178,7 +202,7 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen overflow-hidden px-4 py-6 md:h-dvh md:px-12 md:py-12">
+    <main className="min-h-screen overflow-hidden px-4 py-6 md:h-dvh md:overflow-y-auto md:px-12 md:py-12">
       <AnimatePresence mode="popLayout">
         {phase === "detail" && activeCard ? (
           <DetailView
@@ -187,24 +211,37 @@ export default function Home() {
             accentColor={activeCard.fill}
             onBack={goBack}
           >
-            {(() => {
-              const Content = DETAIL_CONTENT[activeCard.area];
-              return Content ? <Content /> : null;
-            })()}
+            <DetailNavigationProvider value={openCard}>
+              {(() => {
+                const Content = DETAIL_CONTENT[activeCard.area];
+                return Content ? <Content /> : null;
+              })()}
+            </DetailNavigationProvider>
           </DetailView>
         ) : (
           <motion.div
             key="grid"
             exit={{ opacity: 0, transition: { duration: 0 } }}
-            className="bento-grid mx-auto max-w-[1440px] md:h-full"
+            className="bento-grid md:h-full"
           >
             <motion.div
               variants={PUSH_BACK_VARIANTS}
               initial="visible"
               animate={phase === "collapsing" ? "hidden" : "visible"}
-              className="card-hero flex flex-col justify-end gap-1 rounded-[20px] border-2 border-outline bg-hero-maroon p-6 text-cream"
+              className="card-hero flex min-h-0 min-w-0 flex-col justify-center gap-2 overflow-hidden rounded-[20px] border-2 border-outline bg-hero-maroon p-8 text-cream [container-type:size]"
             >
-              <h1 className="font-display text-[2rem] font-normal tracking-[-0.02em] md:text-[3rem]">
+              {/* Same mechanism every other card heading uses (BentoCard's
+                  --text-card: a cqw-based clamp scaled off the card's own
+                  container width, not the viewport) — sized up a bit since
+                  the hero name reads bigger than a card label. Container
+                  type is "size" (not just inline-size) here so cqh is also
+                  available: the clamp takes whichever of the width-based
+                  (cqw) or height-based (cqh) size is smaller, so a card
+                  that's gone short (not just narrow) — a laptop window
+                  resized shorter rather than any particular breakpoint —
+                  still can't grow the text past what the row's actual
+                  height has room for. */}
+              <h1 className="font-display text-[clamp(1.5rem,min(1rem_+_7cqw,20cqh),3.5rem)] font-normal tracking-[-0.02em]">
                 Vidhi Dixit
               </h1>
               <p className="text-16 font-medium uppercase tracking-tight">

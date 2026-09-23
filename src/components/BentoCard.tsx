@@ -88,6 +88,8 @@ export function BentoCard({
   variants,
   animate = "visible",
 }: BentoCardProps) {
+  const isResume = area === "card-resume";
+
   const cardClassName = [
     area,
     fill,
@@ -96,15 +98,39 @@ export function BentoCard({
     "rounded-[20px] border-2 border-outline p-6",
     onClick ? "cursor-pointer" : "",
     TITLE_POSITION_CLASSES[titlePosition],
+    // Resume's envelope bleeds past the card's own edge into the
+    // Projects card next to it — without a higher stacking order here,
+    // Projects (later in DOM, same z-index:auto) paints over that
+    // overflow and hides it instead of the envelope sitting on top.
+    isResume ? "z-20" : "",
   ].join(" ");
 
-  const titleClass = [
-    "relative max-w-full break-words rounded-[12px] border-2 border-outline",
-    "bg-olive-deep px-4 py-2 font-display font-normal leading-tight tracking-tight text-cream",
-    titleSize,
-    titleClassName,
-    vertical ? "[writing-mode:vertical-rl] rotate-180" : "",
-  ].join(" ");
+const titleClass = [
+  // z-20 keeps the heading above the illustration img (z-index set via
+  // illustrationZIndex, 10 by default) — without it, any illustration
+  // whose bounds overlap the heading paints over the text. max-w-full
+  // caps a horizontal title's width, but in vertical-rl writing mode
+  // (below) physical width maps to the text's thickness, not its length —
+  // length is capped by max-height instead. Without this, a vertical
+  // label could render taller than the card and, combined with `bleed`'s
+  // overflow-visible, spill out past the card's edge. whitespace-nowrap
+  // forces a single unbroken line — plain text wrapping (even without
+  // break-words) still treats "/" as a soft-wrap point, which split this
+  // into two lines even when nothing forced a mid-word break.
+  vertical
+    ? "relative z-20 max-h-full whitespace-nowrap"
+    : "relative z-20 max-w-full break-words",
+  isResume
+    ? "font-cursive text-[clamp(1.5rem,1rem_+_5cqw,2.25rem)] text-purple whitespace-pre-line"
+    : "rounded-[12px] border-2 border-outline bg-olive-deep px-4 py-2 font-display text-cream",
+  "font-normal leading-tight tracking-tight",
+  // Resume sets its own font size above — text-card (a container-query
+  // clamp) would otherwise compete for the same property and, depending
+  // on Tailwind's utility ordering, silently win over it.
+  isResume ? "" : titleSize,
+  titleClassName,
+  vertical ? "[writing-mode:vertical-rl] rotate-180" : "",
+].join(" ");
 
   return (
     <motion.div

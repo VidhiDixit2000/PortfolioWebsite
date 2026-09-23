@@ -1,21 +1,49 @@
 export type ExperienceEntry = {
   id: string;
   role: string;
-  company: string;
+  /** Omitted for a self-directed period with no employer. */
+  company?: string;
   period: string;
+  /** Shown under the role/company line — for a self-directed period with
+   * no bullets of its own yet, or extra framing a bullet list doesn't fit. */
+  description?: string;
   /** Full bullets, verbatim from the resume — kept for fidelity (and for
    * anything reading the raw source later, e.g. the AI agent). */
   bullets: string[];
   /** Condensed versions of the same bullets, for the website display. */
   highlights: string[];
+  /** Shows a "→ See projects" link that jumps to the Projects card. */
+  projectsLink?: boolean;
+  /** Renders a video block when set — no placeholder shown until it is. */
+  videoSrc?: string;
 };
 
 export const experience: ExperienceEntry[] = [
   {
+    id: "independent-projects",
+    role: "Independent projects",
+    period: "March 2026 – Present",
+    description:
+      "Self-directed period focused on backend systems, AI-adjacent engineering and DevOps, alongside open-source contributions and technical writing.",
+    bullets: [
+      "Building a personalised AI agent that takes a job description and returns a structured match assessment against my work, looking up project details from a local data file so the model reports rather than invents them.",
+      "Built backend services and full-stack applications with FastAPI, React and PostgreSQL, including a permission-filtering rules engine that determines what an AI assistant may retrieve per user, using DAG traversal and a deterministic multi-stage filter.",
+      "Containerised and deployed applications to AWS with Docker Compose and GitHub Actions CI/CD, covering Linux server setup, container networking and environment-based configuration.",
+      "Wrote and published developer-facing technical content, including an onboarding guide for an open-source testing tool that documented eleven setup friction points and a reporting defect.",
+    ],
+    highlights: [
+      "Building a personalised AI agent that takes a job description and returns a structured match assessment against my work, looking up project details from a local data file so the model reports rather than invents them.",
+      "Built backend services and full-stack applications with FastAPI, React and PostgreSQL, including a permission-filtering rules engine that determines what an AI assistant may retrieve per user, using DAG traversal and a deterministic multi-stage filter.",
+      "Containerised and deployed applications to AWS with Docker Compose and GitHub Actions CI/CD, covering Linux server setup, container networking and environment-based configuration.",
+      "Wrote and published developer-facing technical content, including an onboarding guide for an open-source testing tool that documented eleven setup friction points and a reporting defect.",
+    ],
+    projectsLink: true,
+  },
+  {
     id: "blue-flame-labs",
     role: "Technical Consultant / Software Developer",
     company: "Blue Flame Labs",
-    period: "May 2025 – Current",
+    period: "May 2025 – March 2026",
     bullets: [
       "Designed, developed, tested, and maintained scalable React.js and FastAPI applications following component-based architecture and complete SDLC practices.",
       "Built and maintained backend services using a microservices architecture with FastAPI and Docker, enabling independent deployment, scalability, and clearer separation of concerns across application modules.",
@@ -30,13 +58,11 @@ export const experience: ExperienceEntry[] = [
       "Led end-to-end testing across API and integration layers, identifying performance bottlenecks and driving optimizations that enhanced application responsiveness and reliability.",
     ],
     highlights: [
-      "Built scalable React.js + FastAPI applications with a component-based, microservices architecture.",
-      "Designed secure RESTful APIs — auth, validation, exception handling, third-party integrations.",
-      "Built reusable React components, custom hooks, and responsive admin dashboards.",
-      "Designed normalized PostgreSQL schemas and optimized queries for high-volume data.",
-      "Containerized services with Docker; deployed to AWS via GitHub Actions CI/CD.",
-      "Owned the ticket lifecycle end-to-end, partnering directly with business stakeholders on requirements.",
-      "Led API/integration testing, finding and fixing performance bottlenecks.",
+      "Built scalable React.js and FastAPI applications on a component-based, microservices architecture, including reusable components, custom hooks and responsive admin dashboards.",
+      "Designed secure RESTful APIs covering auth, validation, exception handling and third-party integrations.",
+      "Designed normalised PostgreSQL schemas and optimised queries for high-volume data.",
+      "Containerised services with Docker and deployed to AWS via GitHub Actions CI/CD.",
+      "Owned the ticket lifecycle end to end, partnering directly with business stakeholders on requirements, and led API and integration testing to find and fix performance bottlenecks.",
     ],
   },
   {
@@ -58,13 +84,12 @@ export const experience: ExperienceEntry[] = [
       "Took initiative in proposing process and workflow improvements during team discussions, contributing to more predictable sprint delivery.",
     ],
     highlights: [
-      "Built a secure authentication/user-management service with FastAPI — JWT auth, RBAC, password hashing.",
-      "Built scalable auth APIs for registration, login, and centralized identity across multiple apps.",
-      "Added OTP-based password reset and email verification, cutting auth support issues ~30%.",
-      "Optimized API and database performance, cutting average response time ~25%.",
-      "Optimized SOQL queries and Governor Limits for transaction efficiency.",
-      "Owned the ticket lifecycle end-to-end, from requirements through QA, deployment, and support.",
-      "Drove unit/integration/regression testing for authentication services.",
+      "Built a secure authentication and user-management service with FastAPI: JWT auth, RBAC and password hashing, with scalable APIs for registration, login and centralised identity across multiple applications.",
+      "Added OTP-based password reset and email verification, cutting auth support issues by about 30%.",
+      "Optimised API and database performance, cutting average response time by about 25%.",
+      "Worked across the Salesforce platform, optimising SOQL queries and working within governor limits for transaction efficiency.",
+      "Owned the ticket lifecycle end to end, from requirements through QA, deployment and support, and drove unit, integration and regression testing for authentication services.",
+      "Owned internal product documentation, including user guides, feature walkthroughs and training material, driving adoption across the team.",
     ],
   },
 ];
