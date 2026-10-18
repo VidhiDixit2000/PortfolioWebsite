@@ -7,6 +7,7 @@ type TitlePosition =
   | "top-center"
   | "top-right"
   | "center-left"
+  | "center-right"
   | "center"
   | "bottom-left"
   | "bottom-center"
@@ -66,6 +67,7 @@ const TITLE_POSITION_CLASSES: Record<TitlePosition, string> = {
   "top-center": "items-start justify-center",
   "top-right": "items-start justify-end",
   "center-left": "items-center justify-start",
+  "center-right": "items-center justify-end",
   center: "items-center justify-center",
   "bottom-left": "items-end justify-start",
   "bottom-center": "items-end justify-center",
@@ -94,6 +96,11 @@ export function BentoCard({
     area,
     fill,
     "relative flex min-w-0 min-h-0 [container-type:inline-size]",
+    // Vertical labels run along the card's height, so their font size
+    // needs a height (cqh) cap too, or a short window pushes the label
+    // past the card. Desktop only: mobile rows are content-sized, and size
+    // containment would collapse the card to zero height there.
+    vertical ? "md:[container-type:size]" : "",
     bleed ? "overflow-visible" : "overflow-hidden",
     "rounded-[20px] border-2 border-outline p-6",
     onClick ? "cursor-pointer" : "",
@@ -118,7 +125,7 @@ const titleClass = [
   // break-words) still treats "/" as a soft-wrap point, which split this
   // into two lines even when nothing forced a mid-word break.
   vertical
-    ? "relative z-20 max-h-full whitespace-nowrap"
+    ? "relative z-20 whitespace-nowrap"
     : "relative z-20 max-w-full break-words",
   isResume
     ? "font-cursive text-[clamp(1.5rem,1rem_+_5cqw,2.25rem)] text-purple whitespace-pre-line"

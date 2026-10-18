@@ -68,13 +68,15 @@ const cards = [
     title: "Contacts / Socials",
     fill: "bg-card-olive",
     vertical: true,
-    titlePosition: "top-right",
+    // Vertically centered on the right edge — equal space above and
+    // below the label.
+    titlePosition: "center-right",
     // Smaller than the other cards' shared size, and small enough that
     // the whole unbroken label (whitespace-nowrap in BentoCard) fits
-    // within the card's own height instead of overflowing past it.
-    titleSize: "text-[clamp(1.2rem,1rem+2cqw,1.5rem)]",
-    // A little clearance from the top edge, on top of the card's own p-6.
-    titleClassName: "mt-2",
+    // within the card's own height instead of overflowing past it — the
+    // cqh cap (size container on desktop, see BentoCard) shrinks it on
+    // short windows, where the width-based clamp alone would overflow.
+    titleSize: "text-[length:min(clamp(1.2rem,1rem_+_2cqw,1.5rem),10cqh)]",
     illustration: "/illustrations/telephone.svg",
     // Biased right, nudged up from dead-center (18% instead of 50%) —
     // top eased in from the full bleed (-top-4 instead of -top-10) so
@@ -123,10 +125,13 @@ const cards = [
     bleed: true,
     illustrationZIndex: 10,
   },
-  // No title yet — AI agent tile is still a placeholder (see CLAUDE.md),
-  // so it isn't wired into the click/detail-view flow below.
-  { area: "card-agent", title: "", fill: "bg-card-blue" },
 ] as const;
+
+// The AI agent tile isn't a bento "card" in the usual sense (it never
+// opens a detail view — it's a plain external link to the deployed
+// chatbot), so it's hand-rendered below instead of going through
+// BentoCard/DETAIL_CONTENT like the rest of `cards`.
+const AI_ASSISTANT_URL = "https://vidhi-s-portfolio-ai-assistant.vercel.app";
 
 // Anticipation-style easing (overshoot before/after settling) — matches
 // the reference site's react-spring easeInBack trail, just ported to
@@ -265,6 +270,48 @@ export default function Home() {
                 }
               />
             ))}
+            {/* AI agent tile: a plain external link to the deployed
+                chatbot, not a detail-view card — same border/radius/hover
+                treatment as BentoCard, hand-rendered since it needs an
+                <a> wrapper and has no detail content. */}
+            <motion.a
+              href={AI_ASSISTANT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Still curious? Ask my AI — opens in a new tab"
+              variants={PUSH_BACK_VARIANTS}
+              initial="visible"
+              animate={phase === "collapsing" ? "hidden" : "visible"}
+              whileHover={{
+                scale: 1.02,
+                boxShadow: "0 10px 28px -8px rgba(42, 36, 64, 0.35)",
+                transition: { type: "spring", stiffness: 300, damping: 22 },
+              }}
+              className="card-agent relative flex min-w-0 min-h-0 cursor-pointer items-end justify-start overflow-visible rounded-[20px] border-2 border-outline bg-card-blue p-4 [container-type:inline-size]"
+            >
+              <span
+                aria-hidden="true"
+                className="absolute top-3 right-3 z-30 font-display text-16 leading-none text-outline/70"
+              >
+                ↗
+              </span>
+              {/* Same chip styling as the other card headings (BentoCard),
+                  sized down to fit this short tile. Pinned to the tile's top-left,
+                  up and to the left of the face. */}
+              <span className="absolute top-4 left-4 z-20 whitespace-nowrap rounded-[10px] border-2 border-outline bg-olive-deep px-3 py-1.5 font-display text-[clamp(0.85rem,0.5rem+3cqw,1.05rem)] font-normal leading-tight tracking-tight text-cream">
+                Still curious?
+              </span>
+              <div className="pointer-events-none absolute right-3 -bottom-4 z-10 aspect-[655/478] h-[125%]">
+                {/* eslint-disable-next-line @next/next/no-img-element -- local
+                    SVG illustration; next/image gives SVGs no optimization
+                    benefit and would fight the object-contain sizing here. */}
+                <img
+                  src="/illustrations/ai_assistant.svg?v=4"
+                  alt="Ask my AI"
+                  className="h-full w-full object-contain"
+                />
+              </div>
+            </motion.a>
           </motion.div>
         )}
       </AnimatePresence>
