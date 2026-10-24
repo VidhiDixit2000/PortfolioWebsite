@@ -11,7 +11,7 @@ import type { Project } from "@/data/projects";
  * hue that doesn't have its own card token. Deliberately no orange/peach
  * tint here — the Projects card's own heading swatch (accentColor) is
  * card-orange, so no container on this page should reuse that color. */
-const TINT = {
+export const TINT = {
   blue: "#A9D4E4",
   pink: "#F6B0DF",
   mint: "#BFE3DC",
@@ -25,7 +25,7 @@ const TINT = {
  * text-outline/* utility used by descendants (tags, GIF caption, pipeline
  * chips), since that utility reads the custom property live at its own
  * position in the tree. */
-const PANEL_TEXT: CSSProperties = {
+export const PANEL_TEXT: CSSProperties = {
   color: "#2a2440",
   ["--color-outline" as string]: "#2a2440",
 };
@@ -35,12 +35,23 @@ type ProjectStoryProps = {
   index: number;
 };
 
+/** Anchor id for a case study, so the Projects card grid can scroll to it. */
+export function storyAnchorId(project: Project) {
+  return `story-${project.id}`;
+}
+
 export function ProjectStory({ project, index }: ProjectStoryProps) {
   const story = project.story;
   if (!story) return null;
+  const hasMedia = Boolean(story.mediaSrc || story.mediaCaption);
 
   return (
-    <motion.article {...blurIn(index)} className="mb-20 last:mb-0 md:mb-28">
+    <motion.article
+      {...blurIn(index)}
+      id={storyAnchorId(project)}
+      // Clears DetailView's sticky Back bar when scrolled to from a card.
+      className="mb-20 scroll-mt-24 last:mb-0 md:mb-28"
+    >
       {/* Title + one-line summary */}
       <header className="mb-14 md:mb-20">
         <div className="max-w-[560px]" style={PANEL_TEXT}>
@@ -198,8 +209,15 @@ export function ProjectStory({ project, index }: ProjectStoryProps) {
         </div>
       </section>
 
-      {/* Result + media */}
-      <section className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:items-center">
+      {/* Result + media. The media panel only renders when the story has
+          media or a caption for it; without one, Result takes the row. */}
+      <section
+        className={
+          hasMedia
+            ? "grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:items-center"
+            : "grid gap-6 md:max-w-[62%]"
+        }
+      >
         <div
           className="relative z-10 rounded-[20px] p-7 shadow-[0_14px_34px_-8px_rgba(42,36,64,0.18)]"
           style={{ background: TINT.blue, ...PANEL_TEXT }}
@@ -222,23 +240,25 @@ export function ProjectStory({ project, index }: ProjectStoryProps) {
           </ul>
         </div>
 
-        <div
-          className="rounded-[20px] p-7 md:-ml-10"
-          style={{ background: TINT.mint, ...PANEL_TEXT }}
-        >
-          <div className="flex aspect-video items-center justify-center rounded-[14px] bg-paper p-4 text-center text-14 font-medium text-outline/50">
-            {story.mediaSrc ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={story.mediaSrc}
-                alt=""
-                className="h-full w-full rounded-[10px] object-contain"
-              />
-            ) : (
-              story.mediaCaption ?? "Demo video / GIF"
-            )}
+        {hasMedia && (
+          <div
+            className="rounded-[20px] p-7 md:-ml-10"
+            style={{ background: TINT.mint, ...PANEL_TEXT }}
+          >
+            <div className="flex aspect-video items-center justify-center rounded-[14px] bg-paper p-4 text-center text-14 font-medium text-outline/50">
+              {story.mediaSrc ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={story.mediaSrc}
+                  alt=""
+                  className="h-full w-full rounded-[10px] object-contain"
+                />
+              ) : (
+                story.mediaCaption
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </section>
 
       {((story.links && story.links.length > 0) || project.githubUrl) && (

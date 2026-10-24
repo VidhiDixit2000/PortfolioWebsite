@@ -27,7 +27,7 @@ export type ProjectStory = {
   gifCaption?: string;
   gifSrc?: string;
   /** Shown inside the media placeholder until a real demo video/GIF is
-   * supplied. */
+   * supplied. With neither this nor mediaSrc, the media panel is omitted. */
   mediaCaption?: string;
   mediaSrc?: string;
   /** Extra links beyond the GitHub repo (which comes from project.githubUrl)
@@ -59,7 +59,7 @@ export const projects: Project[] = [
       "Built an interactive React dashboard with hierarchy (DAG) visualization, a filter funnel showing attrition at each permission stage, per-stage pipeline timing metrics, and a multi-user comparison view.",
       "Structured the repository as separate backend and frontend applications with environment-based configuration and versioned database schema and seed data.",
     ],
-    githubUrl: "https://github.com/VidhiDixit2000/Supra_engine",
+    githubUrl: "https://github.com/VidhiDixit2000/clinical-rules-engine",
     story: {
       displayTitle: "Clinical Rules Engine",
       chip: "Project",
@@ -97,6 +97,99 @@ export const projects: Project[] = [
       ],
       mediaCaption: "Demo: switching the user updates the DAG and funnel counts",
       gifSrc: "/illustrations/projects/hard-work.gif",
+    },
+  },
+  {
+    id: "portfolio-ai-assistant",
+    title: "Portfolio AI Assistant",
+    stack: "FastAPI, Python, React, LLM, Streaming, Render, Vercel",
+    bullets: [
+      "A chat grounded in my resume that answers the question a recruiter actually asks, instead of making them hunt across pages.",
+      "Classification routing sends different kinds of question down different paths, and streaming responses mean it replies immediately.",
+      "Built to never embellish: it only states experience the resume supports.",
+    ],
+    githubUrl: "https://github.com/VidhiDixit2000/portfolio-ai-assistant",
+    story: {
+      chip: "Project",
+      summary:
+        "A chat assistant grounded in my resume that answers the question a recruiter actually came with — and never claims experience I don't have.",
+      tags: ["FastAPI", "Python", "React", "LLM", "Streaming", "Render", "Vercel"],
+      problem: [
+        "A portfolio tells recruiters what I want them to read. They arrive with their own question — does she have Salesforce integration experience, has she deployed anything — and have to hunt for the answer across pages, or give up.",
+      ],
+      approachIntro: [
+        "A chat grounded in my resume, so it answers the question actually asked.",
+      ],
+      pipeline: [["Question", "Classify", "Route", "Answer from resume", "Stream reply"]],
+      fixes: [
+        "Classification routing so different kinds of question take different paths.",
+        "Streaming responses so it replies immediately instead of sitting blank.",
+        "The hard constraint was that it must never embellish: an assistant that invents experience fails exactly when someone checks.",
+      ],
+      result: [
+        'Live on this site — the "Still curious? Ask my AI" card is the running product, so a reader can test the claim in the same visit.',
+      ],
+      links: [{ label: "Live assistant", url: "https://vidhi-s-portfolio-ai-assistant.vercel.app" }],
+      gifSrc: "/illustrations/projects/hard-work.gif",
+    },
+  },
+  {
+    id: "keepup-inventory",
+    title: "React + FastAPI + PostgreSQL CRUD Application",
+    stack: "React, FastAPI, PostgreSQL, SQLAlchemy, Docker, AWS EC2, Netlify",
+    bullets: [
+      "Built a full-stack CRUD application (React frontend, FastAPI + SQLAlchemy backend, PostgreSQL database) to learn Docker, container networking, cloud deployment, and environment-based configuration end to end.",
+      "Containerized the backend and database with Docker Compose, using Docker's internal DNS (the postgres-db service name) for container-to-container communication instead of localhost.",
+      "Deployed the FastAPI backend to an AWS EC2 instance running Docker Compose, and the React frontend to Netlify, with environment variables switching the API URL between development and production builds.",
+      "Configured CORS between the separately-hosted frontend and backend, and documented the API with FastAPI's interactive Swagger UI at /docs.",
+    ],
+    githubUrl: "https://github.com/VidhiDixit2000/keepup-inventory",
+    story: {
+      displayTitle: "KeepUp Inventory",
+      chip: "Project",
+      summary:
+        "An inventory app that anyone can run with one command, built to learn Docker and AWS EC2 by actually using them.",
+      tags: [
+        "Docker",
+        "Docker Compose",
+        "AWS EC2",
+        "Linux",
+        "FastAPI",
+        "PostgreSQL",
+        "React",
+        "GitHub Actions",
+        "Netlify",
+      ],
+      problem: [
+        "The inventory app itself wasn't the hard part. Getting it running was.",
+        "Every time someone new wanted to use it, they had to repeat the whole setup: install the right Python version, create a virtual environment, install dependencies, install and configure PostgreSQL, create the database, set the connection string, then do it all again on the next machine. Any step done slightly differently produced a different result, and the usual outcome was that it worked on one machine and not the next.",
+      ],
+      approachIntro: [
+        "I moved the setup into the project itself, then put the backend somewhere everyone could reach.",
+      ],
+      pipeline: [
+        ["Dockerfile", "Docker Compose", "docker compose up"],
+        [
+          "GitHub",
+          "AWS EC2",
+          "FastAPI + PostgreSQL containers",
+          "GitHub Actions redeploys on push",
+        ],
+      ],
+      fixes: [
+        "Containerised the environment. FastAPI and PostgreSQL run as services under Compose, so the whole stack starts with one command and behaves the same on every machine. The backend reaches the database through Docker's internal DNS by service name rather than localhost, and the connection string comes from an environment variable instead of being hardcoded.",
+        "Hosted it on AWS EC2. Instead of everyone running their own copy, the backend runs on one instance I set up myself: Docker and Compose installed, only the required ports open, and debugging done on the server with docker ps and docker compose logs. The React frontend sits on Netlify and points at it through a per-build environment variable.",
+        "Removed the manual deploy. A GitHub Actions workflow redeploys the backend on every push to main, so updating the running app isn't an SSH session and a list of commands.",
+      ],
+      result: [
+        'Setup went from a page of instructions to a single command, with no "works on my machine" gap between environments.',
+        "One shared backend instead of separate local copies drifting apart, and deployment is a push rather than a checklist.",
+        "What I was really after: Docker and EC2 stopped being things I'd read about. I've now written Dockerfiles, debugged container-to-container networking, administered a Linux server, controlled its inbound access, and fixed CORS between two separately hosted origins — the problems that only show up once something actually has to run somewhere.",
+      ],
+      links: [{ label: "Live site", url: "https://keepupinventory.netlify.app/" }],
+      gifSrc: "/illustrations/projects/hard-work.gif",
+      mediaCaption: "The live app: add a product, see it in the table",
+      mediaSrc: "/illustrations/projects/KeepupInventory_fullpage_ss.png",
     },
   },
   {
@@ -151,63 +244,14 @@ export const projects: Project[] = [
       mediaSrc: "/illustrations/projects/keploy-no-demo.gif",
     },
   },
-  {
-    id: "fast-api-project",
-    title: "React + FastAPI + PostgreSQL CRUD Application",
-    stack: "React, FastAPI, PostgreSQL, SQLAlchemy, Docker, AWS EC2, Netlify",
-    bullets: [
-      "Built a full-stack CRUD application (React frontend, FastAPI + SQLAlchemy backend, PostgreSQL database) to learn Docker, container networking, cloud deployment, and environment-based configuration end to end.",
-      "Containerized the backend and database with Docker Compose, using Docker's internal DNS (the postgres-db service name) for container-to-container communication instead of localhost.",
-      "Deployed the FastAPI backend to an AWS EC2 instance running Docker Compose, and the React frontend to Netlify, with environment variables switching the API URL between development and production builds.",
-      "Configured CORS between the separately-hosted frontend and backend, and documented the API with FastAPI's interactive Swagger UI at /docs.",
-    ],
-    githubUrl: "https://github.com/VidhiDixit2000/fast-api-project",
-    story: {
-      displayTitle: "KeepUp Inventory",
-      chip: "Project",
-      summary:
-        "An inventory app that anyone can run with one command, built to learn Docker and AWS EC2 by actually using them.",
-      tags: [
-        "Docker",
-        "Docker Compose",
-        "AWS EC2",
-        "Linux",
-        "FastAPI",
-        "PostgreSQL",
-        "React",
-        "GitHub Actions",
-        "Netlify",
-      ],
-      problem: [
-        "The inventory app itself wasn't the hard part. Getting it running was.",
-        "Every time someone new wanted to use it, they had to repeat the whole setup: install the right Python version, create a virtual environment, install dependencies, install and configure PostgreSQL, create the database, set the connection string, then do it all again on the next machine. Any step done slightly differently produced a different result, and the usual outcome was that it worked on one machine and not the next.",
-      ],
-      approachIntro: [
-        "I moved the setup into the project itself, then put the backend somewhere everyone could reach.",
-      ],
-      pipeline: [
-        ["Dockerfile", "Docker Compose", "docker compose up"],
-        [
-          "GitHub",
-          "AWS EC2",
-          "FastAPI + PostgreSQL containers",
-          "GitHub Actions redeploys on push",
-        ],
-      ],
-      fixes: [
-        "Containerised the environment. FastAPI and PostgreSQL run as services under Compose, so the whole stack starts with one command and behaves the same on every machine. The backend reaches the database through Docker's internal DNS by service name rather than localhost, and the connection string comes from an environment variable instead of being hardcoded.",
-        "Hosted it on AWS EC2. Instead of everyone running their own copy, the backend runs on one instance I set up myself: Docker and Compose installed, only the required ports open, and debugging done on the server with docker ps and docker compose logs. The React frontend sits on Netlify and points at it through a per-build environment variable.",
-        "Removed the manual deploy. A GitHub Actions workflow redeploys the backend on every push to main, so updating the running app isn't an SSH session and a list of commands.",
-      ],
-      result: [
-        'Setup went from a page of instructions to a single command, with no "works on my machine" gap between environments.',
-        "One shared backend instead of separate local copies drifting apart, and deployment is a push rather than a checklist.",
-        "What I was really after: Docker and EC2 stopped being things I'd read about. I've now written Dockerfiles, debugged container-to-container networking, administered a Linux server, controlled its inbound access, and fixed CORS between two separately hosted origins — the problems that only show up once something actually has to run somewhere.",
-      ],
-      links: [{ label: "Live site", url: "https://keepupinventory.netlify.app/" }],
-      gifSrc: "/illustrations/projects/hard-work.gif",
-      mediaCaption: "The live app: add a product, see it in the table",
-      mediaSrc: "/illustrations/projects/KeepupInventory_fullpage_ss.png",
-    },
-  },
 ];
+
+/** The case-study project for a GitHub repo, matched on repo name (the
+ * last segment of `githubUrl`, case-insensitive). */
+export function findProjectByRepo(repoName: string): Project | undefined {
+  const name = repoName.toLowerCase();
+  return projects.find(
+    (project) =>
+      project.githubUrl.replace(/\/+$/, "").split("/").pop()?.toLowerCase() === name,
+  );
+}
